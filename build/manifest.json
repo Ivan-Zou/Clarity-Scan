@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "Clarity Scan",
+    "version": "1.0",
+    "description": "Detect Brain Rot Content on YouTube",
+    "icons": {
+      "16": "images/logo.png",
+      "32": "images/logo.png",
+      "180": "images/logo.png",
+      "192": "images/logo.png",
+      "512": "images/logo.png"
+    },
+    "offline_enabled": true,
+    "permissions": ["storage", "activeTab", "notifications"],
+    "action": {
+      "default_popup": "index.html"
+    }
+  }
