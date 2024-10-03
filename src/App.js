@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
+
+import PercentageDisplay from './components/PercentageDisplay';
 import './App.css';
 
 
 function App() {
-    const [currentTab, setCurrentTab] = useState('addPurchase');
-    
+    const [percent, setPercentage] = useState(45);
     return (
         <div className="App">
             <div>
-                Hello World!
+                <PercentageDisplay percent={percent}></PercentageDisplay>
             </div>
             
         </div>
