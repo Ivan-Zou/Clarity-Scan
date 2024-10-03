@@ -5,7 +5,7 @@ import './App.css';
 
 
 function App() {
-    const [percent, setPercentage] = useState(45);
+    const [percent, setPercentage] = useState(65);
     return (
         <div className="App">
             <div>
