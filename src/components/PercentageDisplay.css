@@ -1,0 +1,16 @@
+.circular-progress-bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px; 
+}
+  
+  
+.CircularProgressbar {
+    background-color: beige;
+}
+
+.CircularProgressbar-text {
+    font-weight: bold;
+}
