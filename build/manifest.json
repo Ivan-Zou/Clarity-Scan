@@ -14,5 +14,14 @@
     "permissions": ["storage", "activeTab", "notifications"],
     "action": {
       "default_popup": "index.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://www.youtube.com/*"],
+        "js": ["content_script.js"]
+      }
+    ],
+    "background": {
+      "service_worker": "service_worker.js"
     }
   }
