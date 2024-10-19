@@ -10,25 +10,31 @@ function openTranscript(_mutations, observer) {
     }
 }
 
-function openPopUp(mutations=null, observer=null) {
+function openPopUp(mutations = null, observer = null) {
     const url = new URL(window.location.href)
     if (url.pathname === VIDEO_PATHNAME) {
         openTranscript(mutations, observer)
         chrome.runtime.sendMessage({ action: 'open_popup' });
+        if (observer) {
+            observer.disconnect();
+        }
     }
 }
 
-function getTranscript(_mutations=null, observer=null) {
-    const transcript = []
-    const transcriptSegmentObjs = document.querySelectorAll('.segment-text.ytd-transcript-segment-renderer');
-    for (let i = 0; i < transcriptSegmentObjs.length; i++) {
-        transcript.push(transcriptSegmentObjs[i].innerText);
-    }
-    if (transcript.length > 0) {
-        closeTranscript();
-        console.log(transcript.join(' '));
-        if (observer) {
-            observer.disconnect();
+function getTranscript(_mutations = null, observer = null) {
+    const url = new URL(window.location.href)
+    if (url.pathname === VIDEO_PATHNAME) {
+        const transcript = []
+        const transcriptSegmentObjs = document.querySelectorAll('.segment-text.ytd-transcript-segment-renderer');
+        for (let i = 0; i < transcriptSegmentObjs.length; i++) {
+            transcript.push(transcriptSegmentObjs[i].innerText);
+        }
+        if (transcript.length > 0) {
+            closeTranscript();
+            console.log(transcript.join(' '));
+            if (observer) {
+                observer.disconnect();
+            }
         }
     }
 }
@@ -36,7 +42,6 @@ function getTranscript(_mutations=null, observer=null) {
 function closeTranscript() {
     const closeTranscriptBtn = document.querySelector('[aria-label="Close transcript"]');
     if (closeTranscriptBtn) {
-        console.log('CLOSE');
         closeTranscriptBtn.click();
     }
 }
@@ -47,5 +52,10 @@ function addObserver(callback, subtree = false) {
         { attributes: false, childList: true, subtree: subtree });
 }
 
-addObserver(openPopUp);
-addObserver(getTranscript, true);
+window.addEventListener('yt-navigate-finish', () => {
+    console.log('navigate finish');
+    setTimeout(() => {
+        addObserver(openPopUp);
+        addObserver(getTranscript, true);
+    }, 1500);
+});
