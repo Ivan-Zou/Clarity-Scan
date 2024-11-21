@@ -11,5 +11,5 @@ while True:
     # Ensure the output is sent immediately
     sys.stdout.flush() 
     
-    # Wait for 1 second
-    time.sleep(1)
+    # Wait for 5 second
+    time.sleep(5)
