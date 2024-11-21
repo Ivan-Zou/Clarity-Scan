@@ -12,6 +12,14 @@ const pythonProcess = spawn("python", ["src/model/model.py"]);
 wss.on("connection", (ws) => {
     console.log("Client connected");
 
+    // Listen for messages 
+    ws.on('message', (message) => {
+        console.log(`Received: ${message}`);
+        
+        // Send the message to the Python script
+        pythonProcess.stdin.write(`${message}\n`);
+    });
+
     // Listen for data from the Python script
     pythonProcess.stdout.on("data", (data) => {
         const percentage = data.toString().trim();

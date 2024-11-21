@@ -1,8 +1,11 @@
 import random
-import time
 import sys
 
 while True:
+
+    # Read input from stdin
+    input = sys.stdin.readline().strip()
+
     # Generate a random number between 1 and 100
     random_percentage = random.randint(1, 100)
     
@@ -11,5 +14,3 @@ while True:
     # Ensure the output is sent immediately
     sys.stdout.flush() 
     
-    # Wait for 5 second
-    time.sleep(5)
