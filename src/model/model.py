@@ -6,28 +6,31 @@ import joblib
 vectorizer = joblib.load("src/model/vectorizer.pkl")
 model = joblib.load("src/model/model.pkl")
 
-# Listen for multiple inputs in a loop
+print("Model is running. Provide input to classify (Ctrl+C to exit).", flush=True)
+
 try:
-    print("Model is running. Provide input to classify (Ctrl+C to exit).")
     while True:
         # Read input from stdin
         input_data = sys.stdin.readline().strip()
 
-        # If no input is provided, wait and check again
-        if not input_data:
-            time.sleep(1)  # Add a delay to avoid spamming output
-            continue
+        if input_data:
+            print(f"Received input: {input_data}", flush=True)
 
-        # Transform the input using the vectorizer
-        transformed_input = vectorizer.transform([input_data])
+            try:
+                # Transform the input using the vectorizer
+                transformed_input = vectorizer.transform([input_data])
+                predicted_label = model.predict(transformed_input)[0]
 
-        # Predict using the model
-        predicted_label = model.predict(transformed_input)[0]
-
-        # Output the prediction
-        print(f"Predicted Label: {predicted_label}")
+                # Output the prediction
+                print(f"Predicted Label: {predicted_label}", flush=True)
+                break  # Break after processing one input
+            except Exception as e:
+                print(f"Error during processing: {str(e)}", flush=True)
+        else:
+            # Delay before checking again to avoid busy-waiting
+            time.sleep(1)
 
 except KeyboardInterrupt:
-    print("\nModel stopped. Exiting...")
+    print("\nModel stopped. Exiting...", flush=True)
 finally:
     sys.exit()
