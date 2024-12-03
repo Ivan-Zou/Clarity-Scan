@@ -24,22 +24,46 @@ function openPopUp(_mutations = null, observer = null) {
 
 // Get the transcript of a YouTube video.
 function getTranscript(_mutations = null, observer = null) {
-    const url = new URL(window.location.href)
-    if (url.pathname === VIDEO_PATHNAME) {
-        const transcript = []
-        const transcriptSegmentObjs = document.querySelectorAll('.segment-text.ytd-transcript-segment-renderer');
-        for (let i = 0; i < transcriptSegmentObjs.length; i++) {
-            transcript.push(transcriptSegmentObjs[i].innerText);
-        }
-        if (transcript.length > 0) {
-            closeTranscript();
-            console.log(transcript.join(' '));
-            if (observer) {
-                observer.disconnect();
-            }
-        }
+    const url = new URL(window.location.href);
+    console.log("Current URL path:", url.pathname); // Log current path
+
+    if (!url.pathname.startsWith(VIDEO_PATHNAME)) {
+        console.log("Not a valid video page. Exiting function."); // Log if not on a video page
+        return false;
+    }
+
+    const transcriptSegments = document.querySelectorAll(".segment-text.ytd-transcript-segment-renderer");
+    console.log("Number of transcript segments found:", transcriptSegments.length); // Log number of transcript segments
+
+    const transcript = [];
+    for (let i = 0; i < transcriptSegments.length; i++) {
+        transcript.push(transcriptSegments[i].innerText);
+    }
+
+    if (transcript.length > 0) {
+        closeTranscript();
+        console.log("Fetched transcript:", transcript.join(" ")); // Log full transcript
+
+        // Send transcript to the WebSocket server
+        const ws = new WebSocket("ws://localhost:6789");
+        ws.onopen = () => {
+            const payload = JSON.stringify({ transcript: transcript.join(" ") });
+            console.log("Sending payload to server:", payload); // Log payload being sent
+            ws.send(payload);
+            ws.close(); // Close WebSocket after sending
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error); // Log WebSocket errors
+        };
+
+        if (observer) observer.disconnect();
+    } else {
+        console.warn("No transcript segments found."); // Log if no transcript is found
     }
 }
+
+
 
 // Simulate clicking the "Close Transcript" button on a YouTube video.
 function closeTranscript() {
