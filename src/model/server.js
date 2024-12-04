@@ -3,20 +3,27 @@ const { spawn } = require("child_process");
 const axios = require("axios");
 require("dotenv").config();
 
-// OpenAI Configuration
 const openaiKey = process.env.OPENAI_API_KEY;
 if (!openaiKey) {
     console.error("OPENAI_API_KEY is not defined in .env file");
-    process.exit(1); // Exit if API key is missing
+    process.exit(1);
 }
 
-// Start the WebSocket server
 const wss = new WebSocket.Server({ port: 6789 });
 console.log("WebSocket server started on ws://localhost:6789");
-console.log("Server is ready for connections!");
+
+let latestOutput = null; // Buffer for latest output
 
 wss.on("connection", (ws) => {
     console.log("Client connected");
+
+    // Send buffered output to newly connected client
+    if (latestOutput) {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(latestOutput);
+            console.log("Sent buffered output to client:", latestOutput);
+        }
+    }
 
     ws.on("message", async (message) => {
         console.log(`Received message from client: ${message}`);
@@ -25,29 +32,26 @@ wss.on("connection", (ws) => {
         try {
             parsedMessage = JSON.parse(message);
         } catch (error) {
-            console.error("Error processing transcript: Invalid JSON format");
-            ws.send("Error: Invalid JSON format. Ensure the message is properly serialized.");
+            console.error("Invalid JSON format");
+            ws.send("Error: Invalid JSON format.");
             return;
         }
 
         const { transcript } = parsedMessage;
         if (!transcript) {
-            ws.send("Error: Transcript data is missing in the received message.");
+            ws.send("Error: Missing transcript data.");
             return;
         }
 
         try {
-            console.log("Calling OpenAI API for summarization...");
+            console.log("Calling OpenAI API...");
             const response = await axios.post(
                 "https://api.openai.com/v1/chat/completions",
                 {
                     model: "gpt-4",
                     messages: [
                         { role: "system", content: "You are a summarization assistant." },
-                        {
-                            role: "user",
-                            content: `Summarize: ${transcript}`,
-                        },
+                        { role: "user", content: `Summarize: ${transcript}` },
                     ],
                     max_tokens: 100,
                     temperature: 0.7,
@@ -70,7 +74,15 @@ wss.on("connection", (ws) => {
             pythonProcess.stdout.on("data", (data) => {
                 const output = data.toString().trim();
                 console.log("Python model output:", output);
-                ws.send(output); // Send model output to the client
+
+                latestOutput = output; // Update buffer with latest output
+
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(output);
+                    console.log("Output sent to client:", output);
+                } else {
+                    console.warn("Client disconnected. Storing output in buffer.");
+                }
             });
 
             pythonProcess.stderr.on("data", (data) => {
@@ -78,11 +90,13 @@ wss.on("connection", (ws) => {
             });
 
             pythonProcess.on("close", (code) => {
-                console.log(`Python script exited with code ${code}`);
+                console.log(`Python process exited with code ${code}`);
             });
         } catch (error) {
             console.error("Error during processing:", error.message || error);
-            ws.send("Error processing the transcript. Please try again.");
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send("Error processing the transcript.");
+            }
         }
     });
 
