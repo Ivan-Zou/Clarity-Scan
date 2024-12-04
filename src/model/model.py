@@ -15,20 +15,17 @@ try:
 
         if input_data:
             print(f"Received input: {input_data}", flush=True)
-
             try:
-                # Transform the input using the vectorizer
                 transformed_input = vectorizer.transform([input_data])
                 predicted_label = model.predict(transformed_input)[0]
 
-                # Output the prediction
-                print(f"Predicted Label: {predicted_label}", flush=True)
-                break  # Break after processing one input
+                # Multiply by 10 for percentage
+                percentage = predicted_label * 10
+                print(f"{percentage}", flush=True)  # Send percentage back to Node.js
             except Exception as e:
-                print(f"Error during processing: {str(e)}", flush=True)
+                print(f"Error: {str(e)}", flush=True)
         else:
-            # Delay before checking again to avoid busy-waiting
-            time.sleep(1)
+            time.sleep(1)  # Delay before checking again to avoid busy-waiting
 
 except KeyboardInterrupt:
     print("\nModel stopped. Exiting...", flush=True)

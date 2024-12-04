@@ -22,7 +22,6 @@ wss.on("connection", (ws) => {
         console.log(`Received message from client: ${message}`);
         let parsedMessage;
 
-        // Parse the received message
         try {
             parsedMessage = JSON.parse(message);
         } catch (error) {
@@ -38,7 +37,6 @@ wss.on("connection", (ws) => {
         }
 
         try {
-            // Step 1: Summarize the transcript using OpenAI API
             console.log("Calling OpenAI API for summarization...");
             const response = await axios.post(
                 "https://api.openai.com/v1/chat/completions",
@@ -48,7 +46,7 @@ wss.on("connection", (ws) => {
                         { role: "system", content: "You are a summarization assistant." },
                         {
                             role: "user",
-                            content: `I will send you a transcript to a YouTube video. I want you to output a brainrot review of the video, about 3-4 sentences, describing how brainrot the video is and why you think that. Do not summarize the video, rather, write 3-4 sentences about the brainrot level and your reasoning: ${transcript}`,
+                            content: `Summarize: ${transcript}`,
                         },
                     ],
                     max_tokens: 100,
@@ -65,15 +63,14 @@ wss.on("connection", (ws) => {
             const summary = response.data.choices[0].message.content.trim();
             console.log("Summary:", summary);
 
-            // Step 2: Send the summary to the Python model
-            console.log("Sending summary to Python model...");
             const pythonProcess = spawn("python", ["src/model/model.py"]);
             pythonProcess.stdin.write(summary + "\n");
             pythonProcess.stdin.end();
 
             pythonProcess.stdout.on("data", (data) => {
-                console.log("Python model output:", data.toString());
-                ws.send(data.toString().trim()); // Send model output to the client
+                const output = data.toString().trim();
+                console.log("Python model output:", output);
+                ws.send(output); // Send model output to the client
             });
 
             pythonProcess.stderr.on("data", (data) => {
@@ -97,5 +94,3 @@ wss.on("connection", (ws) => {
         console.error("WebSocket error:", error);
     });
 });
-
-console.log("Server is ready for connections!");

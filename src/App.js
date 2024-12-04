@@ -15,9 +15,18 @@ function App() {
 
         // Update the percentage when a message is received
         ws.onmessage = (event) => {
-            const percentage = parseInt(event.data, 10);
-            setPercentage(percentage);
+            const receivedData = event.data.trim(); // Trim any extra spaces/newlines
+            const percentage = parseInt(receivedData, 10);
+        
+            if (!isNaN(percentage)) {
+                setPercentage(percentage); // Set valid percentage
+            } else {
+                console.error(`Invalid data received: ${receivedData}`);
+                setPercentage(0); // Fallback to 0 if invalid data
+            }
         };
+        
+        
 
         // Clean up the WebSocket connection on unmount
         return () => {
@@ -27,9 +36,11 @@ function App() {
 
     const sendInput = () => {
         if (socket) {
-            socket.send("transcript");
+            const payload = { transcript: "Placeholder transcript text" }; // Example payload
+            socket.send(JSON.stringify(payload)); // Send serialized JSON
         }
     };
+    
 
     return (
         <div className="App">
