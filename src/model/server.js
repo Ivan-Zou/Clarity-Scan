@@ -22,6 +22,7 @@ wss.on("connection", (ws) => {
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(latestOutput);
             console.log("Sent buffered output to client:", latestOutput);
+            latestOutput = null; // Clear buffer after sending
         }
     }
 
@@ -80,6 +81,7 @@ wss.on("connection", (ws) => {
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(output);
                     console.log("Output sent to client:", output);
+                    latestOutput = null; // Clear buffer after successful send
                 } else {
                     console.warn("Client disconnected. Storing output in buffer.");
                 }
