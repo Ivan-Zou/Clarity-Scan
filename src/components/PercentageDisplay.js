@@ -1,3 +1,7 @@
+import React from 'react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+
 const PercentageDisplay = ({ percent }) => {
     console.log('Rendering PercentageDisplay with percent:', percent);
     const color = percent < 50 ? '#4caf50' : '#9b0202';
@@ -16,3 +20,5 @@ const PercentageDisplay = ({ percent }) => {
         </div>
     );
 };
+
+export default PercentageDisplay;
