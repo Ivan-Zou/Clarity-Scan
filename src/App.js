@@ -1,43 +1,66 @@
-import React, { useState, useEffect } from 'react';
-
-import PercentageDisplay from './components/PercentageDisplay';
-import './App.css';
-
+import React, { useState, useEffect } from "react";
+import PercentageDisplay from "./components/PercentageDisplay";
+import "./App.css";
 
 function App() {
-    const [percent, setPercentage] = useState(0);
+    const [percent, setPercent] = useState(0);
     const [socket, setSocket] = useState(null);
 
-    useEffect(() => {
-        // Connect to the WebSocket server
+    const connectWebSocket = () => {
         const ws = new WebSocket("ws://localhost:6789");
-        setSocket(ws);
+        console.log("Attempting WebSocket connection...");
 
-        // Update the percentage when a message is received
-        ws.onmessage = (event) => {
-            const percentage = parseInt(event.data, 10);
-            setPercentage(percentage);
+        ws.onopen = () => {
+            console.log("WebSocket connection established");
+            setSocket(ws);
         };
 
-        // Clean up the WebSocket connection on unmount
+        ws.onmessage = (event) => {
+            console.log("Message received from server:", event.data);
+            const parsedData = parseInt(event.data, 10);
+            if (!isNaN(parsedData)) {
+                setPercent(parsedData);
+            } else {
+                console.error("Invalid data received:", event.data);
+                setPercent(0);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log("WebSocket connection closed. Retrying in 5 seconds...");
+            setTimeout(connectWebSocket, 5000); // Retry connection
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+    };
+
+    useEffect(() => {
+        connectWebSocket();
+
         return () => {
-            ws.close();
+            console.log("Cleaning up WebSocket connection");
+            if (socket) {
+                socket.close();
+            }
         };
     }, []);
 
     const sendInput = () => {
-        if (socket) {
-            socket.send("transcript");
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const message = JSON.stringify({ transcript: "test transcript" });
+            console.log("Sending message to server:", message);
+            socket.send(message);
+        } else {
+            console.error("WebSocket is not open. Cannot send message.");
         }
     };
 
     return (
         <div className="App">
-            <div>
-                <PercentageDisplay percent={percent}></PercentageDisplay>
-                <button onClick={sendInput}>Update Percent</button>
-            </div>
-            
+            <PercentageDisplay percent={percent} />
+            <button onClick={sendInput}>Update Percent</button>
         </div>
     );
 }
