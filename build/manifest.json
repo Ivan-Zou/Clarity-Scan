@@ -11,7 +11,8 @@
     "512": "images/logo.png"
   },
   "offline_enabled": true,
-  "permissions": ["storage", "activeTab", "notifications"],
+  "host_permissions": ["https://*/"],
+  "permissions": ["storage", "activeTab", "notifications", "http://*/*", "https://*/*"],
   "action": {
     "default_popup": "index.html"
   },
@@ -31,6 +32,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+    "extension_pages": "script-src 'self' 'wasm-eval' 'unsafe-eval' 'wasm-unsafe-eval'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
   }
 }

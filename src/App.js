@@ -69,7 +69,7 @@
 
 import React, { useState, useEffect } from "react";
 import PercentageDisplay from "./components/PercentageDisplay";
-// import { loadPyodide } from "pyodide";
+import { loadPyodide } from "pyodide";
 import "./App.css";
 const axios = require("axios");
 
@@ -87,12 +87,13 @@ function App() {
         const setupPyodide = async () => {
             console.log("Loading Pyodide...");
             try {
-                const pyodideInstance = await window.loadPyodide({
-                    indexURL: "./pyodide/",
-                });
+                // const pyodideInstance = await window.loadPyodide({
+                //     indexURL: "pyodide/",
+                // });
                 // const pyodideInstance = await window.loadPyodide({
                 //     indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
                 // });
+                const pyodideInstance = await loadPyodide();
 
                 setPyodide(pyodideInstance);
                 console.log(pyodideInstance);
