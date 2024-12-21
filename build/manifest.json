@@ -1,27 +1,36 @@
 {
-    "manifest_version": 3,
-    "name": "Clarity Scan",
-    "version": "1.0",
-    "description": "Detect Brain Rot Content on YouTube",
-    "icons": {
-      "16": "images/logo.png",
-      "32": "images/logo.png",
-      "180": "images/logo.png",
-      "192": "images/logo.png",
-      "512": "images/logo.png"
-    },
-    "offline_enabled": true,
-    "permissions": ["storage", "activeTab", "notifications"],
-    "action": {
-      "default_popup": "index.html"
-    },
-    "content_scripts": [
-      {
-        "matches": ["https://www.youtube.com/*"],
-        "js": ["content_script.js"]
-      }
-    ],
-    "background": {
-      "service_worker": "service_worker.js"
+  "manifest_version": 3,
+  "name": "Clarity Scan",
+  "version": "1.0",
+  "description": "Detect Brain Rot Content on YouTube",
+  "icons": {
+    "16": "images/logo.png",
+    "32": "images/logo.png",
+    "180": "images/logo.png",
+    "192": "images/logo.png",
+    "512": "images/logo.png"
+  },
+  "offline_enabled": true,
+  "permissions": ["storage", "activeTab", "notifications"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content_script.js"]
     }
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["pyodide/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; worker-src 'self';"
   }
+}
