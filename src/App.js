@@ -192,7 +192,7 @@ random.randint(1, 100)
             <PercentageDisplay percent={percent} />
             
             <button onClick={generateRandomPercentage} disabled={!pyodide}>
-                {pyodide ? "Generate Random Percentage" : "Loading Pyodide..."}
+                {pyodide ? "Get Percent" : "Loading Pyodide..."}
             </button>
         </div>
     );
