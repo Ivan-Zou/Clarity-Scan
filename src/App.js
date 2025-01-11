@@ -69,7 +69,6 @@
 
 import React, { useState, useEffect } from "react";
 import PercentageDisplay from "./components/PercentageDisplay";
-// import { loadPyodide } from "pyodide";
 import "./App.css";
 const axios = require("axios");
 
@@ -90,10 +89,6 @@ function App() {
                 const pyodideInstance = await window.loadPyodide({
                     indexURL: "pyodide/",
                 });
-                // const pyodideInstance = await window.loadPyodide({
-                //     indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
-                // });
-                // const pyodideInstance = await loadPyodide();
 
                 setPyodide(pyodideInstance);
                 console.log(pyodideInstance);
@@ -142,7 +137,7 @@ percentage
         }
     };
 
-    const sendInput = async () => {
+    const generateBrainRotPercent = async () => {
         let transcript = ""; // temp transcript cause idk how to retrieve it
         console.log("Calling OpenAI API...");
         const response = await axios.post(
@@ -191,9 +186,11 @@ random.randint(1, 100)
         }
     };
 
+    // replace generateRandomPercentage with generateBrainRotPercent when its done
     return (
         <div className="App">
             <PercentageDisplay percent={percent} />
+            
             <button onClick={generateRandomPercentage} disabled={!pyodide}>
                 {pyodide ? "Generate Random Percentage" : "Loading Pyodide..."}
             </button>
