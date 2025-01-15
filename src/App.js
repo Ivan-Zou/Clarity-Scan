@@ -1,87 +1,14 @@
-// import React, { useState, useEffect } from "react";
-// import PercentageDisplay from "./components/PercentageDisplay";
-// import "./App.css";
-
-// function App() {
-//     const [percent, setPercent] = useState(0);
-//     const [socket, setSocket] = useState(null);
-
-//     const connectWebSocket = () => {
-//         const ws = new WebSocket("ws://localhost:6789");
-//         console.log("Attempting WebSocket connection...");
-
-//         ws.onopen = () => {
-//             console.log("WebSocket connection established");
-//             setSocket(ws);
-//         };
-
-//         ws.onmessage = (event) => {
-//             console.log("Message received from server:", event.data);
-//             const parsedData = parseInt(event.data, 10);
-//             if (!isNaN(parsedData)) {
-//                 setPercent(parsedData);
-//             } else {
-//                 console.error("Invalid data received:", event.data);
-//                 setPercent(0);
-//             }
-//         };
-
-//         ws.onclose = () => {
-//             console.log("WebSocket connection closed. Retrying in 5 seconds...");
-//             setTimeout(connectWebSocket, 5000); // Retry connection
-//         };
-
-//         ws.onerror = (error) => {
-//             console.error("WebSocket error:", error);
-//         };
-//     };
-
-//     useEffect(() => {
-//         connectWebSocket();
-
-//         return () => {
-//             console.log("Cleaning up WebSocket connection");
-//             if (socket) {
-//                 socket.close();
-//             }
-//         };
-//     }, []);
-
-//     const sendInput = () => {
-//         if (socket && socket.readyState === WebSocket.OPEN) {
-//             const message = JSON.stringify({ transcript: "test transcript" });
-//             console.log("Sending message to server:", message);
-//             socket.send(message);
-//         } else {
-//             console.error("WebSocket is not open. Cannot send message.");
-//         }
-//     };
-
-//     return (
-//         <div className="App">
-//             <PercentageDisplay percent={percent} />
-//             <button onClick={sendInput}>Update Percent</button>
-//         </div>
-//     );
-// }
-
-// export default App;
-
 import React, { useState, useEffect } from "react";
 import PercentageDisplay from "./components/PercentageDisplay";
+import axios from "axios";
 import "./App.css";
-const axios = require("axios");
 
 const openaiKey = process.env.OPENAI_API_KEY;
-// if (!openaiKey) {
-//     console.error("OPENAI_API_KEY is not defined in .env file");
-// }
 
 function App() {
     const [percent, setPercent] = useState(0);
     const [pyodide, setPyodide] = useState(null);
-
-    // Load Pyodide when the app initializes
+    // Load Pyodide and Transcript Checking when the app initializes
     useEffect(() => {
         const setupPyodide = async () => {
             console.log("Loading Pyodide...");
@@ -89,56 +16,57 @@ function App() {
                 const pyodideInstance = await window.loadPyodide({
                     indexURL: "pyodide/",
                 });
-
                 setPyodide(pyodideInstance);
-                console.log(pyodideInstance);
-                console.log("Pyodide loaded successfully.");
+                return pyodideInstance;
             } catch (error) {
                 console.error("Error loading Pyodide:", error);
             }
         };
 
-        setupPyodide();
+        setupPyodide().then((pyodideInstance) => {
+            chrome.storage.local.get(['transcript', 'score']).then((result) => {
+                console.log(result);
+                if (result.transcript !== undefined) {
+                    console.log('there is a transcript: ' + result.transcript.content);
+                    // Clear transcript
+                    chrome.storage.local.remove('transcript');
+                    generateRandomPercentage(pyodideInstance).then((score) => {
+                        console.log('SCORE:' + score);
+                        chrome.storage.local.set({
+                            'score': score
+                        });
+                    })
+                } else if (result.score !== undefined) { // Load existing score
+                    setPercent(result.score);
+                }
+            });
+        });
     }, []);
 
-    const processTranscript = async (transcript) => {
-        if (!pyodide) {
-            alert("Pyodide is not ready yet!");
-            return;
-        }
-
-        try {
-            console.log("Running Python code in Pyodide...");
-
-            // Python code as a string
-            const pythonCode = `
+    const processTranscript = async (pyodideInstance, transcript) => {
+        // Python code as a string
+        await pyodideInstance.loadPackage("joblib")
+        const pythonCode = `
 import joblib
-
-# Load vectorizer and model
 vectorizer = joblib.load("src/model/vectorizer.pkl")
 model = joblib.load("src/model/model.pkl")
-
+# Load vectorizer and model
 # Transform input and predict percentage
 transformed_input = vectorizer.transform(["${transcript}"])
 predicted_label = model.predict(transformed_input)[0]
 percentage = predicted_label * 10
 percentage
-            `;
+        `;
 
-            // Execute Python code in Pyodide
-            const result = await pyodide.runPythonAsync(pythonCode);
+        // Execute Python code in Pyodide
+        const result = await pyodideInstance.runPythonAsync(pythonCode);
 
-            // Update the UI with the computed percentage
-            setPercent(result);
-            console.log("Python execution result:", result);
-        } catch (error) {
-            console.error("Error running Python code in Pyodide:", error);
-            setPercent(0);
-        }
+        // Update the UI with the computed percentage
+        setPercent(result);
+        console.log("Python execution result:", result);
     };
 
-    const generateBrainRotPercent = async () => {
-        let transcript = ""; // temp transcript cause idk how to retrieve it
+    const generateBrainRotPercent = async (transcript, pyodideInstance) => {
         console.log("Calling OpenAI API...");
         const response = await axios.post(
             "https://api.openai.com/v1/chat/completions",
@@ -163,24 +91,20 @@ percentage
         console.log("Summary:", summary);
 
         if (summary) {
-            processTranscript(summary);
+            processTranscript(summary, pyodideInstance);
         }
     };
 
-    const generateRandomPercentage = () => {
-        if (!pyodide) {
-            alert("Pyodide is not ready yet!");
-            return;
-        }
-
+    const generateRandomPercentage = async (pyodideInstance) => {
         try {
             // Python code to generate a random number
             const code = `
 import random
 random.randint(1, 100)
             `;
-            const result = pyodide.runPython(code);
+            const result = pyodideInstance.runPython(code);
             setPercent(result);
+            return result;
         } catch (error) {
             console.error("Error running Python code:", error);
         }
