@@ -87,10 +87,11 @@ function App() {
             console.log("Loading Pyodide...");
             try {
                 const pyodideInstance = await window.loadPyodide({
-                    indexURL: "pyodide/",
+                    indexURL: "pyodide2/",
                 });
-
+                await pyodideInstance.loadPackage("joblib"); 
                 setPyodide(pyodideInstance);
+                
                 console.log(pyodideInstance);
                 console.log("Pyodide loaded successfully.");
             } catch (error) {
@@ -191,7 +192,7 @@ random.randint(1, 100)
         <div className="App">
             <PercentageDisplay percent={percent} />
             
-            <button onClick={generateRandomPercentage} disabled={!pyodide}>
+            <button onClick={processTranscript("")} disabled={!pyodide}>
                 {pyodide ? "Get Percent" : "Loading Pyodide..."}
             </button>
         </div>
