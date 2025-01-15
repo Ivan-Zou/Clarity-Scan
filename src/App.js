@@ -192,7 +192,7 @@ random.randint(1, 100)
         <div className="App">
             <PercentageDisplay percent={percent} />
             
-            <button onClick={processTranscript("")} disabled={!pyodide}>
+            <button onClick={generateRandomPercentage} disabled={!pyodide}>
                 {pyodide ? "Get Percent" : "Loading Pyodide..."}
             </button>
         </div>
