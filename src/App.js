@@ -4,7 +4,7 @@ import axios from "axios";
 import "./App.css";
 
 const openaiKey = process.env.OPENAI_API_KEY;
-
+const testReview = 'This video about hiking essentials highlights useful gear while sharing funny mishaps from past trips. The host’s laid-back style makes the information approachable without losing its utility. It’s perfect for those new to outdoor adventures.'
 function App() {
     const [percent, setPercent] = useState(0);
     const [pyodide, setPyodide] = useState(null);
@@ -14,7 +14,7 @@ function App() {
             console.log("Loading Pyodide...");
             try {
                 const pyodideInstance = await window.loadPyodide({
-                    indexURL: "pyodide2/",
+                    indexURL: "pyodide/",
                 });
                 setPyodide(pyodideInstance);
                 return pyodideInstance;
@@ -62,6 +62,7 @@ percentage
         // Update the UI with the computed percentage
         setPercent(result);
         console.log("Python execution result:", result);
+        return result;
     };
 
     const generateBrainRotPercent = async (transcript, pyodideInstance) => {
