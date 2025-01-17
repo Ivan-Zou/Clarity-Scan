@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((message, _) => {
             'transcript': {
                 'content': message.transcript
             }
-        });
+        }).then(() => console.log('Finished storing'));
     }
 });
 

@@ -3,8 +3,8 @@ import PercentageDisplay from "./components/PercentageDisplay";
 import axios from "axios";
 import "./App.css";
 
-const openaiKey = process.env.OPENAI_API_KEY;
-const testReview = 'This video about hiking essentials highlights useful gear while sharing funny mishaps from past trips. The host’s laid-back style makes the information approachable without losing its utility. It’s perfect for those new to outdoor adventures.'
+const openaiKey = ''
+
 function App() {
     const [percent, setPercent] = useState(0);
     const [pyodide, setPyodide] = useState(null);
@@ -24,12 +24,13 @@ function App() {
         };
 
         setupPyodide().then((pyodideInstance) => {
-            chrome.storage.local.get(['transcript', 'score']).then((result) => {
+            setTimeout(() => {
+                chrome.storage.local.get(['transcript', 'score']).then((result) => {
                 console.log(result);
                 if (result.transcript !== undefined) {
                     // Clear transcript
                     chrome.storage.local.remove('transcript');
-                    generateRandomPercentage(pyodideInstance).then((score) => {
+                    generateBrainRotPercent(pyodideInstance, result.transcript.content).then((score) => {
                         chrome.storage.local.set({
                             'score': score
                         });
@@ -37,35 +38,40 @@ function App() {
                 } else if (result.score !== undefined) { // Load existing score
                     setPercent(result.score);
                 }
-            });
+            }, 2000)});
         });
     }, []);
 
+
     const processTranscript = async (pyodideInstance, transcript) => {
         // Python code as a string
-        await pyodideInstance.loadPackage("joblib")
+        await pyodideInstance.loadPackage("requests");
+        await pyodideInstance.loadPackage("joblib");
+        await pyodideInstance.loadPackage("scikit-learn");
         const pythonCode = `
+import requests
 import joblib
-vectorizer = joblib.load("src/model/vectorizer.pkl")
-model = joblib.load("src/model/model.pkl")
-# Load vectorizer and model
-# Transform input and predict percentage
+from io import BytesIO
+import sklearn
+import random
+modelURI = "https://raw.githubusercontent.com/Ivan-Zou/Clarity-Scan/main/src/model/model.pkl"
+vectorURI = "https://raw.githubusercontent.com/Ivan-Zou/Clarity-Scan/main/src/model/vectorizer.pkl"
+model = joblib.load(BytesIO(requests.get(modelURI).content))
+vectorizer = joblib.load(BytesIO(requests.get(vectorURI).content))
 transformed_input = vectorizer.transform(["${transcript}"])
 predicted_label = model.predict(transformed_input)[0]
-percentage = predicted_label * 10
-percentage
+predicted_label * 10
         `;
 
         // Execute Python code in Pyodide
-        const result = await pyodideInstance.runPythonAsync(pythonCode);
+        const result = await pyodideInstance.runPythonAsync(pythonCode);;
 
         // Update the UI with the computed percentage
         setPercent(result);
-        console.log("Python execution result:", result);
         return result;
     };
 
-    const generateBrainRotPercent = async (transcript, pyodideInstance) => {
+    const generateBrainRotPercent = async (pyodideInstance, transcript) => {
         console.log("Calling OpenAI API...");
         const response = await axios.post(
             "https://api.openai.com/v1/chat/completions",
@@ -90,7 +96,7 @@ percentage
         console.log("Summary:", summary);
 
         if (summary) {
-            processTranscript(summary, pyodideInstance);
+            processTranscript(pyodideInstance, summary);
         }
     };
 
