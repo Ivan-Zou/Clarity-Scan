@@ -48,6 +48,7 @@ function App() {
         await pyodideInstance.loadPackage("requests");
         await pyodideInstance.loadPackage("joblib");
         await pyodideInstance.loadPackage("scikit-learn");
+        let t = String(transcript).replace('"', '');
         const pythonCode = `
 import requests
 import joblib
@@ -58,15 +59,18 @@ modelURI = "https://raw.githubusercontent.com/Ivan-Zou/Clarity-Scan/main/src/mod
 vectorURI = "https://raw.githubusercontent.com/Ivan-Zou/Clarity-Scan/main/src/model/vectorizer.pkl"
 model = joblib.load(BytesIO(requests.get(modelURI).content))
 vectorizer = joblib.load(BytesIO(requests.get(vectorURI).content))
-transformed_input = vectorizer.transform(["${transcript}"])
+transformed_input = vectorizer.transform(["${t}"])
 predicted_label = model.predict(transformed_input)[0]
-predicted_label * 10
+int(predicted_label) * 10
         `;
-
+        console.log("Running Python Code");
         // Execute Python code in Pyodide
-        const result = await pyodideInstance.runPythonAsync(pythonCode);;
+        let result = pyodideInstance.runPython(pythonCode);
+        console.log("Finished Running Python Code");
 
         // Update the UI with the computed percentage
+        result = Number(result)
+        console.log(result);
         setPercent(result);
         return result;
     };
@@ -79,7 +83,7 @@ predicted_label * 10
                 model: "gpt-4",
                 messages: [
                     { role: "system", content: "You are a summarization assistant." },
-                    { role: "user", content: `Summarize: ${transcript}` },
+                    { role: "user", content: `Summarize: ${transcript} in 3 sentences.` },
                 ],
                 max_tokens: 100,
                 temperature: 0.7,
