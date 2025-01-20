@@ -48,7 +48,7 @@ function App() {
         await pyodideInstance.loadPackage("requests");
         await pyodideInstance.loadPackage("joblib");
         await pyodideInstance.loadPackage("scikit-learn");
-        let t = String(transcript).replace('"', '');
+        let t = String(transcript).replaceAll("\"", "");
         const pythonCode = `
 import requests
 import joblib
@@ -82,8 +82,12 @@ int(predicted_label) * 10
             {
                 model: "gpt-4",
                 messages: [
-                    { role: "system", content: "You are a summarization assistant." },
-                    { role: "user", content: `Summarize: ${transcript} in 3 sentences.` },
+                    { role: "system",
+                        content: `A brain-rot YouTube video is one that prioritizes sensationalism, misinformation, 
+                        or mindless entertainment over substance, critical thinking, or meaningful value. You will be
+                        given a transcript of a YouTube video. Output a brainrot review of the video (3-4 sentences),
+                        describing the level of brain-rot of the video and explain your reasoning.` },
+                    { role: "user", content: transcript },
                 ],
                 max_tokens: 100,
                 temperature: 0.7,
