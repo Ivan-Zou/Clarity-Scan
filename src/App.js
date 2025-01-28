@@ -3,11 +3,12 @@ import PercentageDisplay from "./components/PercentageDisplay";
 import axios from "axios";
 import "./App.css";
 
-const openaiKey = ''
+const openaiKey = '';
 
 function App() {
     const [percent, setPercent] = useState(0);
     const [pyodide, setPyodide] = useState(null);
+    const [review, setReview] = useState("N/A");
     // Load Pyodide and Transcript Checking when the app initializes
     useEffect(() => {
         const setupPyodide = async () => {
@@ -102,6 +103,7 @@ int(predicted_label) * 10
 
         const summary = response.data.choices[0].message.content.trim();
         console.log("Summary:", summary);
+        setReview(summary);
 
         if (summary) {
             processTranscript(pyodideInstance, summary);
@@ -128,9 +130,13 @@ random.randint(1, 100)
         <div className="App">
             <PercentageDisplay percent={percent} />
             
-            <button onClick={generateRandomPercentage} disabled={!pyodide}>
-                {pyodide ? "Get Percent" : "Loading Pyodide..."}
-            </button>
+            <h3>
+                {pyodide ? "Pyodide Ready" : "Loading Pyodide..."}
+            </h3>
+            <p>
+                Brain-Rot Review: 
+                {review}
+            </p>
         </div>
     );
 }
