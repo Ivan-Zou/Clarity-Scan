@@ -9,6 +9,7 @@ function App() {
     const [percent, setPercent] = useState(0);
     const [pyodide, setPyodide] = useState(null);
     const [review, setReview] = useState("N/A");
+    const [activeTab, setActiveTab] = useState("percentage");
     // Load Pyodide and Transcript Checking when the app initializes
     useEffect(() => {
         const setupPyodide = async () => {
@@ -125,18 +126,30 @@ random.randint(1, 100)
         }
     };
 
-    // replace generateRandomPercentage with generateBrainRotPercent when its done
     return (
         <div className="App">
-            <PercentageDisplay percent={percent} />
-            
-            <h3>
-                {pyodide ? "Pyodide Ready" : "Loading Pyodide..."}
-            </h3>
-            <p>
-                Brain-Rot Review: 
-                {review}
-            </p>
+            {/* Tab Buttons */}
+            <div className="tab-buttons">
+                <button 
+                    onClick={() => setActiveTab("percentage")} 
+                    className={activeTab === "percentage" ? "active" : ""}
+                >
+                    Percent
+                </button>
+                <button 
+                    onClick={() => setActiveTab("review")} 
+                    className={activeTab === "review" ? "active" : ""}
+                >
+                    Brain-Rot Review
+                </button>
+            </div>
+            {/* Tab Content */}
+            {activeTab === "percentage" ? (
+                <PercentageDisplay percent={percent} />
+            ) : (
+                <p>{review}</p>
+            )}
+            <h3>{pyodide ? "Pyodide Ready" : "Loading Pyodide..."}</h3>
         </div>
     );
 }

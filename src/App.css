@@ -1,9 +1,52 @@
 .App {
-    height: 150px;
-    width: 150px;
+    height: 300px;
+    width: 250px; /* Increased width for better text display */
     background-color: white;
     font-family: Sans-Serif;
     color: #2c3e50;
     overflow-y: auto; 
     box-sizing: border-box; 
+    text-align: center;
+    padding: 10px;
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.tab-buttons button {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    background-color: #ecf0f1;
+    cursor: pointer;
+    transition: background-color 0.3s ease, font-weight 0.3s ease;
+}
+
+.tab-buttons button.active {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+.tab-buttons button:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.tab-buttons button:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+p {
+    background-color: #f8f9fa;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #d1d1d1;
+    font-size: 14px;
+    color: #34495e;
+    margin: 10px 0;
 }
