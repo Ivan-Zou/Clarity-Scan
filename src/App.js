@@ -10,6 +10,7 @@ function App() {
     const [pyodide, setPyodide] = useState(null);
     const [review, setReview] = useState("N/A");
     const [activeTab, setActiveTab] = useState("percentage");
+    const [processing, setProcessing] = useState(false);
     // Load Pyodide and Transcript Checking when the app initializes
     useEffect(() => {
         const setupPyodide = async () => {
@@ -67,6 +68,7 @@ int(predicted_label) * 10
         `;
         console.log("Running Python Code");
         // Execute Python code in Pyodide
+        setProcessing(true);
         let result = pyodideInstance.runPython(pythonCode);
         console.log("Finished Running Python Code");
 
@@ -74,11 +76,13 @@ int(predicted_label) * 10
         result = Number(result)
         console.log(result);
         setPercent(result);
+        setProcessing(false);
         return result;
     };
 
     const generateBrainRotPercent = async (pyodideInstance, transcript) => {
         console.log("Calling OpenAI API...");
+        setProcessing(true);
         const response = await axios.post(
             "https://api.openai.com/v1/chat/completions",
             {
@@ -145,7 +149,7 @@ random.randint(1, 100)
             </div>
             {/* Tab Content */}
             {activeTab === "percentage" ? (
-                <PercentageDisplay percent={percent} />
+                <PercentageDisplay percent={processing ? "..." : percent} />
             ) : (
                 <p>{review}</p>
             )}
