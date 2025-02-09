@@ -7,11 +7,24 @@ const openaiKey = '';
 
 function App() {
     const [percent, setPercent] = useState(0);
-    const [pyodide, setPyodide] = useState(null);
+    // const [pyodide, setPyodide] = useState(null);
     const [review, setReview] = useState("N/A");
     const [activeTab, setActiveTab] = useState("percentage");
     const [processing, setProcessing] = useState(false);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            chrome.storage.local.get(['mostRecent']).then((result) => {
+                console.log(result);
+                setReview(result.mostRecent.review);
+                setPercent(result.mostRecent.score);
+            })
+        }, 2000);
+        return () => clearInterval(intervalId);
+    }, []);
+
     // Load Pyodide and Transcript Checking when the app initializes
+    /*
     useEffect(() => {
         const setupPyodide = async () => {
             console.log("Loading Pyodide...");
@@ -44,6 +57,7 @@ function App() {
             }, 2000)});
         });
     }, []);
+    */
 
 
     const processTranscript = async (pyodideInstance, transcript) => {
@@ -153,7 +167,7 @@ random.randint(1, 100)
             ) : (
                 <p>{review}</p>
             )}
-            <h3>{pyodide ? "Pyodide Ready" : "Loading Pyodide..."}</h3>
+            {/* <h3>{pyodide ? "Pyodide Ready" : "Loading Pyodide..."}</h3> */}
         </div>
     );
 }

@@ -11,7 +11,7 @@
     "512": "images/logo.png"
   },
   "offline_enabled": true,
-  "host_permissions": ["https://*/"],
+  "host_permissions": ["https://*/", "http://34.238.36.52/*"],
   "permissions": ["storage", "activeTab", "notifications"],
   "action": {
     "default_popup": "index.html"

@@ -23,7 +23,7 @@ function openPopUp(_mutations = null, observer = null) {
 }
 
 // Get the transcript of a YouTube video.
-function getTranscript(_mutations = null, observer = null) {
+async function getTranscript(_mutations = null, observer = null) {
     const transcriptSegments = document.querySelectorAll(".segment-text.ytd-transcript-segment-renderer");
     const transcript = [];
     for (let i = 0; i < transcriptSegments.length; i++) {
@@ -32,11 +32,10 @@ function getTranscript(_mutations = null, observer = null) {
 
     if (transcript.length > 0) {
         closeTranscript();
-        console.log("Fetched transcript:", transcript.join(" ")); // Log full transcript
-        // Send a message with transcript to frontend
         chrome.runtime.sendMessage({
-            "action": "store_transcript",
-            "transcript": transcript.join(" ")
+            "action": "scan_transcript",
+            "url": window.location.href,
+            "transcript": transcript.join(" ").replaceAll("\"", "")
         });
         if (observer) observer.disconnect();
     }
