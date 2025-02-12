@@ -16,7 +16,6 @@
   "action": {
     "default_popup": "index.html"
   },
-  "options_page": "docs.html",
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],

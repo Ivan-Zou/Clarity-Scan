@@ -49,10 +49,10 @@
         <div class="highlight">
             <p><strong>How We Grade Brain-Rot:</strong></p>
             <ul>
-                <li>We first process the video transcript and generate a summary.</li>
-                <li>The summary is analyzed by an AI model trained to detect patterns of misinformation, clickbait, or sensationalism.</li>
-                <li>We then send this AI-generated review into our custom Python model, which assigns a final Brain-Rot Score based on our internal parameters.</li>
-                <li>This approach ensures a balanced evaluation, reducing bias while improving accuracy.</li>
+                <li>We first detect and retrieve the transcript from the current YouTube video.</li>
+                <li>The transcript is then analyzed by Chatgpt to generate a short brainrot review.</li>
+                <li>We then send this review into our custom Python model, which assigns a final Brain-Rot Score based on our internal parameters.</li>
+                <li>Finally, we will send back the score to the user.</li>
             </ul>
         </div>
     </section>
