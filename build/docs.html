@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clarity Scan Documentation</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; line-height: 1.6; }
+        header { text-align: center; padding-bottom: 10px; border-bottom: 2px solid #ddd; }
+        h1, h2 { color: #2c3e50; }
+        section { margin-top: 20px; }
+        ul, ol { margin-left: 20px; }
+        .highlight { background: #f8f9fa; padding: 10px; border-left: 4px solid #2c3e50; margin: 15px 0; }
+        footer { text-align: center; padding-top: 20px; border-top: 2px solid #ddd; margin-top: 20px; }
+    </style>
 </head>
 <body>
     <header>
@@ -14,16 +23,47 @@
     <section>
         <h2>About Clarity Scan</h2>
         <p>Clarity Scan is a Chrome Extension designed to analyze YouTube content 
-           and detect "Brain Rot" content by processing transcripts.</p>
+           and detect "Brain Rot" content by processing video transcripts.</p>
+    </section>
+
+    <section>
+        <h2>What is a Brain-Rot YouTube Video?</h2>
+        <div class="highlight">
+            <p>A brain-rot YouTube video is one that prioritizes <strong>sensationalism, misinformation, 
+            or mindless entertainment</strong> over substance, critical thinking, or meaningful value.</p>
+            <p>Clarity Scan helps detect such content, allowing users to make informed decisions about the media they consume.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Brain-Rot Scoring System</h2>
+        <p>Clarity Scan assigns a Brain-Rot Score ranging from <strong>0% to 100%</strong>, in increments of <strong>10%</strong>:</p>
+        <ul>
+            <li><strong>0%:</strong> No brain-rot, high-quality and informative content.</li>
+            <li><strong>10%-40%:</strong> Slightly low in substance but still informative.</li>
+            <li><strong>50%-70%:</strong> Noticeable use of clickbait or misleading information.</li>
+            <li><strong>80%-100%:</strong> Primarily focused on sensationalism, misinformation, or low-value entertainment.</li>
+        </ul>
+        <p>The score is calculated using **AI-driven content analysis** alongside our custom **Python model**.</p>
+
+        <div class="highlight">
+            <p><strong>How We Grade Brain-Rot:</strong></p>
+            <ul>
+                <li>We first process the **video transcript** and generate a summary.</li>
+                <li>The summary is analyzed by an **AI model** trained to detect patterns of misinformation, clickbait, or sensationalism.</li>
+                <li>We then send this **AI-generated review** into our custom **Python model**, which assigns a **final Brain-Rot Score** based on our internal parameters.</li>
+                <li>This approach ensures a **balanced evaluation**, reducing bias while improving accuracy.</li>
+            </ul>
+        </div>
     </section>
 
     <section>
         <h2>Features</h2>
         <ul>
-            <li>Analyzes YouTube videos in real-time</li>
-            <li>Detects low-quality or misleading content</li>
-            <li>Provides an intuitive UI for reviewing results</li>
-            <li>Uses AI models for transcript analysis</li>
+            <li>Analyzes YouTube videos in real-time.</li>
+            <li>Detects low-quality or misleading content.</li>
+            <li>Uses both AI analysis and a Python-based scoring model.</li>
+            <li>Provides an intuitive UI for reviewing results.</li>
         </ul>
     </section>
 
@@ -31,16 +71,16 @@
         <h2>Permissions & Security</h2>
         <p>Clarity Scan requires certain permissions to function:</p>
         <ul>
-            <li><strong>Storage:</strong> To store user preferences</li>
-            <li><strong>ActiveTab:</strong> To analyze content in the current tab</li>
-            <li><strong>Notifications:</strong> To alert users about detected content</li>
+            <li><strong>Storage:</strong> To store user preferences.</li>
+            <li><strong>ActiveTab:</strong> To analyze content in the current tab.</li>
+            <li><strong>Notifications:</strong> To alert users about detected content.</li>
         </ul>
     </section>
 
     <section>
         <h2>How to Use</h2>
         <ol>
-            <li>Install Clarity Scan from the Chrome Web Store.</li>
+            <li>Install Clarity Scan from Github.</li>
             <li>Open any YouTube video.</li>
             <li>Click on the Clarity Scan icon in the extension bar.</li>
             <li>Review the analysis results in the popup.</li>
