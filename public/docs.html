@@ -27,7 +27,7 @@
     </section>
 
     <section>
-        <h2>What is a Brain-Rot YouTube Video?</h2>
+        <h2>What is Brain-Rot?</h2>
         <div class="highlight">
             <p>A brain-rot YouTube video is one that prioritizes <strong>sensationalism, misinformation, 
             or mindless entertainment</strong> over substance, critical thinking, or meaningful value.</p>
@@ -39,21 +39,36 @@
         <h2>Brain-Rot Scoring System</h2>
         <p>Clarity Scan assigns a Brain-Rot Score ranging from <strong>0% to 100%</strong>, in increments of <strong>10%</strong>:</p>
         <ul>
-            <li><strong>0%:</strong> No brain-rot, high-quality and informative content.</li>
-            <li><strong>10%-40%:</strong> Slightly low in substance but still informative.</li>
-            <li><strong>50%-70%:</strong> Noticeable use of clickbait or misleading information.</li>
-            <li><strong>80%-100%:</strong> Primarily focused on sensationalism, misinformation, or low-value entertainment.</li>
+            <li><strong>0%:</strong> No brain-rot is present. The videos are purely academic or educational in nature with high-quality and informative content.</li>
+            <li><strong>10%:</strong> Educational videos that are more casual and include more personality. These may include personal anecdotes or small jokes.</li>
+            <li><strong>20%:</strong> More casual educational videos where the presence of humor may begin to make the video less straightforward.</li>
+            <li><strong>30%:</strong> Casual videos that are on topic, but frequent tangents, skits, or stories interrupt the flow.</li>
+            <li><strong>40%:</strong> Videos that begin to use slightly exaggerated content, memes, or jokes, which alienate viewers looking for serious content.</li>
+            <li><strong>50%:</strong> Videos where memes or jokes are still creative, funny, or charming, but detract from the main focus of the video.</li>
+            <li><strong>60%:</strong> Videos where humorous or silly content clashes with and threatens to overtake more serious topics in the video.</li>
+            <li><strong>70%:</strong> Videos that contain more exaggerated elements than actual substance, distracting from the main topic of the video.</li>
+            <li><strong>80%:</strong> Videos that make overly emotional, dramatic, and hyperbolic claims about topics.</li>
+            <li><strong>90%:</strong> Videos that make ludicrous and baseless claims about topics.</li>
+            <li><strong>100%:</strong> Videos which are completely unintelligible, misinformed, and wrong.</li>
         </ul>
-        <p>The score is calculated using AI-driven content analysis alongside our custom Python model.</p>
 
+        <p>The score is calculated using AI-driven content analysis alongside our custom Python model.</p>
+    </section>
+
+    <section>
+        <h2>How We Grade Brain-Rot</h2>
         <div class="highlight">
-            <p><strong>How We Grade Brain-Rot:</strong></p>
-            <ul>
+            <p>We use a multi-step process to analyze YouTube video content:</p>
+            <ol>
                 <li>We first detect and retrieve the transcript from the current YouTube video.</li>
-                <li>The transcript is then analyzed by Chatgpt to generate a short brainrot review.</li>
-                <li>We then send this review into our custom Python model, which assigns a final Brain-Rot Score based on our internal parameters.</li>
-                <li>Finally, we will send back the score to the user.</li>
-            </ul>
+                <li>We define brain-rot as: <strong>“A brain-rot YouTube video is one that prioritizes sensationalism, misinformation, or mindless entertainment over substance, critical thinking, or meaningful value.”</strong></li>
+                <li>We then prompt ChatGPT to generate a short brain-rot review based on the transcript.</li>
+                <li>To assign a score consistent with our scoring system, we feed this review into our custom Python model.</li>
+                <li>Our model is trained on a combination of ~1000 real and synthetically generated YouTube video reviews that have been manually labeled.</li>
+                <li>It uses a TF-IDF vectorizer to extract features from the review based on word frequencies.</li>
+                <li>These features are fed into a 3-layer neural network, which assigns a final brain-rot score.</li>
+                <li>Finally, we send back the score to the user along with the ChatGPT-generated review, providing further clarification.</li>
+            </ol>
         </div>
     </section>
 
@@ -72,7 +87,7 @@
         <ol>
             <li>Install Clarity Scan from Github.</li>
             <li>Open any YouTube video.</li>
-            <li>A pop up will automatically appear.</li>
+            <li>Click on the Clarity Scan icon in the extension bar.</li>
             <li>Review the analysis results in the popup.</li>
         </ol>
     </section>
