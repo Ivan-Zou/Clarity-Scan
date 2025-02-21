@@ -32,9 +32,11 @@ async function getTranscript(_mutations = null, observer = null) {
 
     if (transcript.length > 0) {
         closeTranscript();
+
         chrome.runtime.sendMessage({
             "action": "scan_transcript",
             "url": window.location.href,
+            "title": document.title,
             "transcript": transcript.join(" ").replaceAll("\"", "")
         });
         if (observer) observer.disconnect();

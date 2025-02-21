@@ -9,6 +9,7 @@ function App() {
     const [percent, setPercent] = useState(0);
     // const [pyodide, setPyodide] = useState(null);
     const [review, setReview] = useState("N/A");
+    const [title, setTitle] = useState("N/A");
     const [activeTab, setActiveTab] = useState("percentage");
     const [processing, setProcessing] = useState(false);
 
@@ -16,6 +17,8 @@ function App() {
         const intervalId = setInterval(() => {
             chrome.storage.local.get(['mostRecent']).then((result) => {
                 console.log(result);
+                console.log(result.mostRecent.title);
+                setTitle(result.mostRecent.title);
                 setReview(result.mostRecent.review);
                 setPercent(result.mostRecent.score);
             })
@@ -163,7 +166,10 @@ random.randint(1, 100)
             </div>
             {/* Tab Content */}
             {activeTab === "percentage" ? (
-                <PercentageDisplay percent={processing ? "..." : percent} />
+                <div>
+                    <h3>{title}</h3>
+                    <PercentageDisplay percent={processing ? "..." : percent} />
+                </div>
             ) : (
                 <p>{review}</p>
             )}

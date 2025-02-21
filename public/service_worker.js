@@ -17,6 +17,7 @@ chrome.runtime.onMessage.addListener((message, _) => {
                 chrome.storage.local.set({
                     "mostRecent": {
                         'url': message.url,
+                        'title': message.title,
                         'transcript': message.transcript,
                         'review': "N/A",
                         'score': 0
@@ -28,6 +29,7 @@ chrome.runtime.onMessage.addListener((message, _) => {
                     chrome.storage.local.set({
                         "mostRecent": {
                             'url': message.url,
+                            'title': message.title,
                             'review': data.review,
                             'score': data.score
                         }
