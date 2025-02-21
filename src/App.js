@@ -16,8 +16,7 @@ function App() {
     useEffect(() => {
         const intervalId = setInterval(() => {
             chrome.storage.local.get(['mostRecent']).then((result) => {
-                console.log(result);
-                console.log(result.mostRecent.title);
+                console.log(result.mostRecent);
                 setTitle(result.mostRecent.title);
                 setReview(result.mostRecent.review);
                 setPercent(result.mostRecent.score);
