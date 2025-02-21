@@ -36,7 +36,7 @@ async function getTranscript(_mutations = null, observer = null) {
         chrome.runtime.sendMessage({
             "action": "scan_transcript",
             "url": window.location.href,
-            "title": document.title,
+            "title": document.title.replace("- YouTube", ""),
             "transcript": transcript.join(" ").replaceAll("\"", "")
         });
         if (observer) observer.disconnect();

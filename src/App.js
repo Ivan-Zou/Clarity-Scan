@@ -167,7 +167,7 @@ random.randint(1, 100)
             {/* Tab Content */}
             {activeTab === "percentage" ? (
                 <div>
-                    <h3>{title}</h3>
+                    <h3>Title: {title}</h3>
                     <PercentageDisplay percent={processing ? "..." : percent} />
                 </div>
             ) : (
