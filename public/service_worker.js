@@ -4,37 +4,45 @@ chrome.runtime.onMessage.addListener((message, _) => {
     if (message.action === 'open_popup') {
         chrome.action.openPopup(); 
     } else if (message.action === 'scan_transcript') {
-        fetch(WEBHOOK_URL, {
-            method: "POST",
-            body: JSON.stringify({"content": message.transcript}),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+        // Check if result has been cached
+        chrome.storage.local.set({"currentURL": message.url});
+        chrome.storage.local.get(['scoreHistory']).then((result) => {
+            let history = result.scoreHistory;
+            if (history === undefined) {
+                history = {};
             }
-        }).then((response) => {
-            if (!response.ok) {
-                console.log('Fetch failed');
-                chrome.storage.local.set({
-                    "mostRecent": {
+            let scoreObject = history[message.url];
+            if (scoreObject !== undefined) {
+                console.log("Cached");
+                chrome.storage.local.set({'mostRecent': scoreObject});
+            } else {
+                fetch(WEBHOOK_URL, {
+                    method: "POST",
+                    body: JSON.stringify({"content": message.transcript}),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }).then((response) => {
+                    scoreObject = {
                         'url': message.url,
-                        'title': message.title,
                         'transcript': message.transcript,
+                        'title': message.title,
                         'review': "N/A",
                         'score': 0
+                    };
+                    if (!response.ok) {
+                        console.log('Fetch failed');
+                        chrome.storage.local.set({"mostRecent": scoreObject});
+                    } else {
+                        response.json().then((data) => {
+                            scoreObject['review'] = data.review;
+                            scoreObject['score'] = data.score;
+                            history[message.url] = scoreObject;
+                            chrome.storage.local.set({"mostRecent": scoreObject, "scoreHistory": history});
+                        });
                     }
                 });
-            } else {
-                response.json().then((data) => {
-                    console.log(data);
-                    chrome.storage.local.set({
-                        "mostRecent": {
-                            'url': message.url,
-                            'title': message.title,
-                            'review': data.review,
-                            'score': data.score
-                        }
-                    }).then(() => chrome.action.openPopup());
-                })
             }
         });
     }

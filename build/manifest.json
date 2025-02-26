@@ -12,7 +12,7 @@
   },
   "offline_enabled": true,
   "host_permissions": ["https://*/", "http://34.238.36.52/*"],
-  "permissions": ["storage", "activeTab", "notifications"],
+  "permissions": ["storage", "activeTab", "tabs", "notifications"],
   "action": {
     "default_popup": "index.html"
   },
