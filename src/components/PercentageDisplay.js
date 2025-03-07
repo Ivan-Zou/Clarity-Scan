@@ -5,7 +5,7 @@ import 'react-circular-progressbar/dist/styles.css';
 const getColor = (percent) => {
     let color;
     if (percent === "...") {
-        color = "#808080";
+        color = "#d2d2d2";
     } else if (percent < 40) {
         color = "#4caf50";
     } else if (percent < 70) {
