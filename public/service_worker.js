@@ -13,7 +13,6 @@ chrome.runtime.onMessage.addListener((message, _) => {
             }
             let scoreObject = history[message.url];
             if (scoreObject !== undefined) {
-                console.log("Cached");
                 chrome.storage.local.set({'mostRecent': scoreObject});
             } else {
                 fetch(WEBHOOK_URL, {
@@ -32,7 +31,6 @@ chrome.runtime.onMessage.addListener((message, _) => {
                         'score': 0
                     };
                     if (!response.ok) {
-                        console.log('Fetch failed');
                         chrome.storage.local.set({"mostRecent": scoreObject});
                     } else {
                         response.json().then((data) => {
