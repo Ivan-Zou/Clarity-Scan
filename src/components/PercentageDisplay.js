@@ -2,9 +2,22 @@ import React from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
+const getColor = (percent) => {
+    let color;
+    if (percent === "...") {
+        color = "#808080";
+    } else if (percent < 40) {
+        color = "#4caf50";
+    } else if (percent < 70) {
+        color = "#edda32";
+    } else {
+        color = "#9b0202";
+    }
+    return color;
+}
+
 const PercentageDisplay = ({ percent }) => {
-    console.log('Rendering PercentageDisplay with percent:', percent);
-    const color = percent === "..." ? '#808080' : percent < 50 ? '#4caf50' : '#9b0202';
+    const color = getColor(percent);
     return (
         <div className="circular-progress-bar-container">
             <CircularProgressbar
