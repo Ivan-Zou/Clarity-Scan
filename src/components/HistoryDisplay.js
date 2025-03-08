@@ -25,7 +25,7 @@ const HistoryDisplay = ({processing, history}) => {
             {processing ? 
                 (<Stack
                     direction="column"
-                    spacing={2}
+                    spacing={1}
                     sx={{
                         justifyContent: "center",
                         alignItems: "center",
@@ -40,26 +40,37 @@ const HistoryDisplay = ({processing, history}) => {
                         justifyContent: "center",
                         alignItems: "center",
                     }}
+                    spacing={2}
                  >
-                    <h2>Score Chart</h2>
-                    <Box sx={{ width: '100%' }}>
+                    <Stack
+                        direction="column"
+                        sx={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        spacing={0.5}
+                    >
+                        <h2>Score Chart</h2>
                         <PieChart
-                            height={300}
+                            height={200}
+                            width={200}
                             series={[{
                                 data: [
-                                    {id: 0, value: low.length, label: "Low Brain-rot", color: "#4caf50"},
-                                    {id: 1, value: medium.length, label: "Medium Brain-rot", color: "#edda32"},
-                                    {id: 2, value: high.length, label: "High Brain-rot", color: "#9b0202"}
+                                    {id: 0, value: low.length, label: "Low", color: "#4caf50"},
+                                    {id: 1, value: medium.length, label: "Med", color: "#edda32"},
+                                    {id: 2, value: high.length, label: "High", color: "#9b0202"}
                                 ],
-                                innerRadius: 70,
+                                innerRadius: 30,
+                                outerRadius: 80,
+                                paddingAngle: 3,
                             }]}
                             margin={{right: 0}}
                             slotProps={{
                                 legend: {hidden: true}
                             }}
                         />
-                    </Box>
-                    <h2>History</h2>
+                        <h2>History</h2>
+                    </Stack>
 
                     
                 </Stack>)
