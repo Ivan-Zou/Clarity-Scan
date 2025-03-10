@@ -48,12 +48,12 @@ const HistoryDisplay = ({processing, history}) => {
                             justifyContent: "center",
                             alignItems: "center",
                         }}
-                        spacing={0.5}
+                        spacing={1}
                     >
                         <h2>Score Chart</h2>
                         <PieChart
-                            height={200}
-                            width={200}
+                            height={165}
+                            width={165}
                             series={[{
                                 data: [
                                     {id: 0, value: low.length, label: "Low", color: "#4caf50"},
