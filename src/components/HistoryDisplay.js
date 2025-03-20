@@ -118,6 +118,9 @@ const HistoryDisplay = ({ history }) => {
                                     onChange={(e, newValue) => setScoreRange(newValue)}
                                     valueLabelDisplay="auto"
                                     size="small"
+                                    step={10}
+                                    min={0}
+                                    max={100}
                                 />
                             </Box>
                         </Box>
@@ -139,7 +142,17 @@ const HistoryDisplay = ({ history }) => {
                                 >
                                     <ListItemText 
                                         primary={scoreObj.title} 
-                                        secondary={`Score: ${scoreObj.score}%`} 
+                                        secondary={`Score: ${scoreObj.score}%`}
+                                        sx={{
+                                            "& .MuiListItemText-primary": {
+                                                fontSize: "0.9rem",
+                                                fontWeight: 500,
+                                            },
+                                            "& .MuiListItemText-secondary": {
+                                                fontSize: "0.8rem",
+                                                color: "#777",
+                                            },
+                                        }} 
                                         />
                                 </ListItem>
                             )) : (<></>)}
