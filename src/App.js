@@ -4,7 +4,7 @@ import HistoryDisplay from "./components/HistoryDisplay";
 import "./App.css";
 
 function App() {
-    const [percent, setPercent] = useState(0);
+    const [percent, setPercent] = useState('...');
     const [review, setReview] = useState("N/A");
     const [title, setTitle] = useState("N/A");
     const [activeTab, setActiveTab] = useState("percentage");
@@ -14,8 +14,9 @@ function App() {
     useEffect(() => {
         const intervalId = setInterval(() => {
             chrome.storage.local.get(['mostRecent', 'currentURL', 'scoreHistory']).then((result) => {
-                if (result.currentURL === result.mostRecent.url) {
-                    console.log(result);
+                if (result.currentURL !== undefined &&
+                    result.mostRecent.url !== undefined &&
+                    result.currentURL === result.mostRecent.url) {
                     setTitle(result.mostRecent.title);
                     setReview(result.mostRecent.review);
                     setPercent(result.mostRecent.score);
@@ -34,14 +35,14 @@ function App() {
         <div className="App">
             {/* Tab Buttons */}
             <div className="tab-buttons">
-                <button 
-                    onClick={() => setActiveTab("percentage")} 
+                <button
+                    onClick={() => setActiveTab("percentage")}
                     className={activeTab === "percentage" ? "active" : ""}
                 >
                     Percent
                 </button>
-                <button 
-                    onClick={() => setActiveTab("review")} 
+                <button
+                    onClick={() => setActiveTab("review")}
                     className={activeTab === "review" ? "active" : ""}
                 >
                     Brain-Rot Review
@@ -64,8 +65,7 @@ function App() {
                 <p>{review}</p>
             )}
             {activeTab === "history" && (
-                <HistoryDisplay 
-                    processing={processing}
+                <HistoryDisplay
                     history={data}
                 />
             )}
