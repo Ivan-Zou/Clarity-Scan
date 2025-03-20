@@ -91,38 +91,56 @@ const HistoryDisplay = ({ history }) => {
                         />
                         <h2>History</h2>
                         <Box
-                            sx={{ display: 'flex' }}
+                            sx={{ display: 'flex', width: "90%", maxWidth: "250px" }}
+                            spacing={1}
                         >
                             <TextField
                                 label="Search..."
                                 onChange={(e) => {
                                     setSearch(e.target.value.toLowerCase());
                                 }}
+                                size="small"
                                 sx={{
                                     alignSelf: 'flex-start',
-                                    paddingRight: '20px'
+                                    paddingRight: '20px',
+                                    flexGrow: 1,
+                                    fontSize: "0.9rem",
                                 }}
                             />
                             <Box
-                                sx={{ alignSelf: 'flex-end' }}
+                                sx={{ alignSelf: 'flex-end', width: "90%", maxWidth: "250px"  }}
                             >
-                                <Typography>Score</Typography>
+                                <Typography
+                                    sx={{ fontSize: "0.9rem", color: "#555", marginBottom: "3px" }}
+                                >Score</Typography>
                                 <Slider
                                     value={scoreRange}
                                     onChange={(e, newValue) => setScoreRange(newValue)}
                                     valueLabelDisplay="auto"
+                                    size="small"
                                 />
                             </Box>
                         </Box>
-                        <List>
+                        <List sx={{ width: "100%", maxWidth: "250px", padding: "5px 0" }}>
                             {filtered !== undefined ? filtered.map((scoreObj) => (
                                 <ListItem
                                     onClick={(e) => {
                                         e.preventDefault();
                                         chrome.tabs.create({url: scoreObj.url})
                                     }}
+                                    sx={{
+                                        padding: "5px 10px",
+                                        borderBottom: "1px solid #ddd",
+                                        cursor: "pointer",
+                                        "&:hover": {
+                                            backgroundColor: "#f5f5f5",
+                                        },
+                                    }}                                    
                                 >
-                                    <ListItemText primary={scoreObj.title} secondary={scoreObj.score} />
+                                    <ListItemText 
+                                        primary={scoreObj.title} 
+                                        secondary={`Score: ${scoreObj.score}%`} 
+                                        />
                                 </ListItem>
                             )) : (<></>)}
                         </List>
