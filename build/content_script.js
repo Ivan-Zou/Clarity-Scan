@@ -13,12 +13,9 @@ function openTranscript() {
 
 // Opens the main pop up window.
 function openPopUp(_mutations = null, observer = null) {
-    const url = new URL(window.location.href)
-    if (url.pathname === VIDEO_PATHNAME) {
-        chrome.runtime.sendMessage({ action: 'open_popup' });
-        if (observer) {
-            observer.disconnect();
-        }
+    chrome.runtime.sendMessage({ action: 'open_popup' });
+    if (observer) {
+        observer.disconnect();
     }
 }
 
@@ -78,11 +75,14 @@ function checkMutations() {
 }
 
 window.addEventListener('yt-navigate-finish', () => {
-    addObserver(checkMutations);
-    let intervalId = setInterval(() => {
-        if (!detectedMutation) {
-            addObservers();
-            clearInterval(intervalId);
-        }
-    }, 1500);
+    const url = new URL(window.location.href)
+    if (url.pathname === VIDEO_PATHNAME) {
+        addObserver(checkMutations);
+        let intervalId = setInterval(() => {
+            if (!detectedMutation) {
+                addObservers();
+                clearInterval(intervalId);
+            }
+        }, 1500);
+    }
 });
