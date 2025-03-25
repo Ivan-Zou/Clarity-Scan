@@ -65,7 +65,8 @@
                 <li>We then prompt ChatGPT to generate a short brain-rot review based on the transcript.</li>
                 <li>To assign a score consistent with our scoring system, we feed this review into our custom Python model.</li>
                 <li>Our model is trained on a combination of ~1000 real and synthetically generated YouTube video reviews that have been manually labeled.</li>
-                <li>We use a fine-tuned FLAN-T5 text to text transformer to generate brain rot score from 0% - 100%.</li>
+                <li>It uses a TF-IDF vectorizer to extract features from the review based on word frequencies.</li>
+                <li>These features are fed into a 3-layer neural network, which assigns a final brain-rot score.</li>
                 <li>Finally, we send back the score to the user along with the ChatGPT-generated review, providing further clarification.</li>
             </ol>
         </div>
@@ -77,7 +78,7 @@
             <li>Analyzes YouTube videos in real-time.</li>
             <li>Detects brainrot content.</li>
             <li>Uses both AI analysis and a Python-based scoring model.</li>
-            <li>Provides an intuitive UI for reviewing the brain rot score, video review, and user history.</li>
+            <li>Provides an intuitive UI for reviewing results.</li>
         </ul>
     </section>
 
